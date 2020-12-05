@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-use itertools::Itertools;
 use std::ops::RangeInclusive;
 use regex::Regex;
 
@@ -77,9 +75,6 @@ fn is_in_range_suffix(value: &str, range: RangeInclusive<usize>, suffix: &str) -
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    use crate::day4::day4_generator;
-    use crate::day2::day2_part1;
 
     #[test]
     pub fn test1() {
