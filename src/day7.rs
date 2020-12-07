@@ -7,9 +7,11 @@ pub struct BagContains {
     bag_count: usize,
 }
 
+type BagMap = HashMap<String, HashSet<BagContains>>;
+
 #[aoc_generator(day7)]
-pub fn day7_generator(input: &str) -> HashMap<String, HashSet<BagContains>> {
-    let mut bag_map: HashMap<String, HashSet<BagContains>> = HashMap::new();
+pub fn day7_generator(input: &str) -> BagMap {
+    let mut bag_map: BagMap = BagMap::with_capacity(input.len());
     input.lines().for_each(|line| {
         let parts: Vec<String> = line.split("contain ").map(|x| x.to_string()).collect();
         let bag_filter = Regex::new(r"^(\w+\s\w+)\sbags").unwrap();
@@ -30,7 +32,7 @@ pub fn day7_generator(input: &str) -> HashMap<String, HashSet<BagContains>> {
 }
 
 #[aoc(day7, part1)]
-pub fn day7_part1(input: &HashMap<String, HashSet<BagContains>>) -> usize {
+pub fn day7_part1(input: &BagMap) -> usize {
     let mut container_list: HashSet<String> = HashSet::new();
     container_list.insert(String::from("shiny gold"));
     let mut size_before: usize = 0;
@@ -49,13 +51,18 @@ pub fn day7_part1(input: &HashMap<String, HashSet<BagContains>>) -> usize {
     container_list.len() - 1
 }
 
-pub fn descend(input: &HashMap<String, HashSet<BagContains>>, name: &String, multi: usize) -> usize {
+#[aoc(day7, part2)]
+pub fn day7_part2(input: &BagMap) -> usize {
+    part2_recurse(&input, &String::from("shiny gold"), 1) - 1
+}
+
+pub fn part2_recurse(input: &BagMap, name: &String, multi: usize) -> usize {
     match input.get(name) {
         Some(v) => {
             match v.len() {
                 0 => multi,
                 _ => {
-                    v.iter().map(|bag| descend(&input, &bag.bag_name, bag.bag_count) * multi).sum::<usize>() + multi
+                    v.iter().map(|bag| part2_recurse(&input, &bag.bag_name, bag.bag_count) * multi).sum::<usize>() + multi
                 }
             }
         },
@@ -63,10 +70,7 @@ pub fn descend(input: &HashMap<String, HashSet<BagContains>>, name: &String, mul
     }
 }
 
-#[aoc(day7, part2)]
-pub fn day7_part2(input: &HashMap<String, HashSet<BagContains>>) -> usize {
-    descend(&input, &String::from("shiny gold"), 1) - 1
-}
+
 
 #[cfg(test)]
 mod tests {
