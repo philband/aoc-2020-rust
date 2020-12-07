@@ -1,5 +1,4 @@
 use itertools::Itertools;
-use std::collections::BTreeSet;
 
 #[derive(Debug)]
 pub struct Seat {
