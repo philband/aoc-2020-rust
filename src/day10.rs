@@ -4,37 +4,31 @@ use itertools::Itertools;
 use std::ops::Deref;
 
 #[aoc_generator(day10)]
-pub fn day10_generator(input: &str) -> Vec<i32> {
-    let mut vec: Vec<i32> = input
+pub fn day10_generator(input: &str) -> Vec<usize> {
+    let mut v = input
         .lines()
-        .map(|x| x.parse().unwrap())
-        .collect();
-    vec.sort_unstable();
-    vec
+        .flat_map(|line| line.parse())
+        .collect::<Vec<usize>>();
+    v.sort();
+    v.insert(0, 0);
+    v.push(v[v.len() - 1] + 3);
+    v
 }
 
 #[aoc(day10, part1)]
-pub fn day10_part1(input: &[i32]) -> u64 {
-    let mut cm: CountMap<i32> = CountMap::new();
-    for i in 0..4 {
-        cm.insert_or_increment(i);
-    }
-    for i in 0..input.len()-1 {
-        let diff: i32 = (&input[i] - &input[i+1]).abs();
-        &cm.insert_or_increment(diff);
-    }
-    return cm.get_count(&1).unwrap() * cm.get_count(&3).unwrap()
+pub fn day10_part1(input: &[usize]) -> u64 {
+    let diffs = input[..].windows(2).map(|c| c[1] - c[0]).fold(HashMap::new(), |mut map, diff| {
+        *map.entry(diff).or_insert(0) += 1;
+        map
+    });
+    diffs[&1] * diffs[&3]
 }
 
 #[aoc(day10, part2)]
-pub fn day10_part2(input: &[i32]) -> u64 {
-    let mut input = input.clone().to_vec();
-    input.insert(0, 0);
-    input.push(input[input.len() - 1] + 3);
-    let input: Vec<usize> = input.iter().map(|x| *x as usize).collect();
-
-    let max: usize  = input[input.len() - 1];
-    let mut dp = vec![0u64; max as usize + 1];
+pub fn day10_part2(input: &[usize]) -> u64 {
+    let input = input.to_vec();
+    let max  = input[input.len() - 1];
+    let mut dp = vec![0u64; max + 1];
     for x in input {
         match x {
             0 => dp[x] = 1,
