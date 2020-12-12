@@ -1,6 +1,3 @@
-use std::fmt;
-use std::collections::HashSet;
-
 
 #[aoc_generator(day9)]
 pub fn day9_generator(input: &str) -> Vec<usize> {

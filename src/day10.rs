@@ -1,7 +1,4 @@
 use std::collections::HashMap;
-use countmap::CountMap;
-use itertools::Itertools;
-use std::ops::Deref;
 
 #[aoc_generator(day10)]
 pub fn day10_generator(input: &str) -> Vec<usize> {
@@ -38,14 +35,6 @@ pub fn day10_part2(input: &[usize]) -> u64 {
         }
     }
     dp[max]
-}
-
-pub fn possible(input: &[i32]) -> bool {
-    false
-}
-
-pub fn is_possible(input: &[i32]) -> bool {
-    true
 }
 
 #[cfg(test)]

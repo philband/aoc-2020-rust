@@ -1,6 +1,5 @@
 use itertools::Itertools;
 use std::fmt;
-use crate::day5::Seat;
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 pub enum SeatStatus {
