@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
 
-#[derive(Debug,Eq, PartialEq, Hash)]
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub struct BagContains {
     bag_name: String,
     bag_count: usize,
@@ -58,19 +58,18 @@ pub fn day7_part2(input: &BagMap) -> usize {
 
 pub fn part2_recurse(input: &BagMap, name: &String, multi: usize) -> usize {
     match input.get(name) {
-        Some(v) => {
-            match v.len() {
-                0 => multi,
-                _ => {
-                    v.iter().map(|bag| part2_recurse(&input, &bag.bag_name, bag.bag_count) * multi).sum::<usize>() + multi
-                }
+        Some(v) => match v.len() {
+            0 => multi,
+            _ => {
+                v.iter()
+                    .map(|bag| part2_recurse(&input, &bag.bag_name, bag.bag_count) * multi)
+                    .sum::<usize>()
+                    + multi
             }
         },
-        _ => 0
+        _ => 0,
     }
 }
-
-
 
 #[cfg(test)]
 mod tests {

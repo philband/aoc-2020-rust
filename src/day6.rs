@@ -1,13 +1,10 @@
-use std::collections::HashSet;
 use countmap::CountMap;
+use std::collections::HashSet;
 use std::convert::TryInto;
 
 #[aoc_generator(day6)]
 pub fn day6_generator(input: &str) -> Vec<String> {
-    input
-        .split("\n\n")
-        .map(|s| s.to_string())
-        .collect()
+    input.split("\n\n").map(|s| s.to_string()).collect()
 }
 
 #[aoc(day6, part1)]
@@ -16,10 +13,9 @@ pub fn day6_part1(input: &Vec<String>) -> usize {
         .iter()
         .map(|group| {
             let mut set = HashSet::new();
-            group
-                .chars()
-                .filter(|c| !c.is_whitespace())
-                .for_each(|c| { set.insert(c); });
+            group.chars().filter(|c| !c.is_whitespace()).for_each(|c| {
+                set.insert(c);
+            });
             set.len()
         })
         .sum()
@@ -31,16 +27,25 @@ pub fn day6_part2(input: &Vec<String>) -> i32 {
         .iter()
         .map(|group| {
             let mut cm: CountMap<char> = CountMap::new();
-            let individual_answers: Vec<String> = group.split('\n').map(|s| s.to_string()).collect();
-            individual_answers
-                .iter()
-                .for_each(|answers| {
-                    answers
-                        .chars()
-                        .filter(|c| !c.is_whitespace())
-                        .for_each(|c| { cm.insert_or_increment(c); })
-                });
-            cm.iter().map(|(_, v)| if *v == individual_answers.len().try_into().unwrap() { 1 } else { 0 }).sum::<i32>()
+            let individual_answers: Vec<String> =
+                group.split('\n').map(|s| s.to_string()).collect();
+            individual_answers.iter().for_each(|answers| {
+                answers
+                    .chars()
+                    .filter(|c| !c.is_whitespace())
+                    .for_each(|c| {
+                        cm.insert_or_increment(c);
+                    })
+            });
+            cm.iter()
+                .map(|(_, v)| {
+                    if *v == individual_answers.len().try_into().unwrap() {
+                        1
+                    } else {
+                        0
+                    }
+                })
+                .sum::<i32>()
         })
         .sum()
 }
@@ -51,8 +56,7 @@ mod tests {
 
     #[test]
     pub fn test1() {
-        let sample =
-        "abc
+        let sample = "abc
 
 a
 b
@@ -72,8 +76,7 @@ b";
     }
     #[test]
     pub fn test2() {
-        let sample =
-            "abc
+        let sample = "abc
 
 a
 b

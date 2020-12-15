@@ -3,7 +3,7 @@ use itertools::Itertools;
 #[derive(Debug)]
 pub struct Seat {
     row: u32,
-    col: u32
+    col: u32,
 }
 
 impl Seat {
@@ -37,23 +37,15 @@ pub fn day5_generator(input: &str) -> Vec<Seat> {
                 mutator /= 2;
             }
             let col = low;
-            Seat {
-                row,
-                col
-            }
-        }).collect()
+            Seat { row, col }
+        })
+        .collect()
 }
-
 
 #[aoc(day5, part1)]
 pub fn day5_part1(input: &Vec<Seat>) -> u32 {
-    input
-        .iter()
-        .map(|x| x.seat_id())
-        .max()
-        .unwrap()
+    input.iter().map(|x| x.seat_id()).max().unwrap()
 }
-
 
 #[aoc(day5, part2)]
 pub fn day5_part2(input: &Vec<Seat>) -> u32 {
@@ -64,16 +56,13 @@ pub fn day5_part2(input: &Vec<Seat>) -> u32 {
     (min..max)
         .tuple_windows()
         .filter_map(|(b, s, a)| {
-            match(
-                seats.contains(&b),
-                seats.contains(&s),
-                seats.contains(&a)
-                ) {
+            match (seats.contains(&b), seats.contains(&s), seats.contains(&a)) {
                 (true, false, true) => Some(s),
-                _ => None
+                _ => None,
             }
-        }).next().unwrap()
-
+        })
+        .next()
+        .unwrap()
 }
 
 #[aoc(day5, part2, sum)]
@@ -92,8 +81,7 @@ mod tests {
 
     #[test]
     pub fn test1() {
-        let sample =
-            "BFFFBBFRRR
+        let sample = "BFFFBBFRRR
 FFFBBBFRRR
 BBFFBBFRLL";
 

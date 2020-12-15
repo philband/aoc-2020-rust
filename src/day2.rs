@@ -5,20 +5,21 @@ pub struct Password {
     lower: usize,
     upper: usize,
     ch: char,
-    password: String
+    password: String,
 }
 
 impl Password {
     fn is_valid_part_1(&self) -> bool {
-        (self.lower..self.upper+1).contains(&self.password.matches(self.ch).count())
+        (self.lower..self.upper + 1).contains(&self.password.matches(self.ch).count())
     }
 
     fn is_valid_part_2(&self) -> bool {
         self.password
             .char_indices()
-            .filter(|(index, _)| self.lower == index +1 || self.upper == index + 1)
+            .filter(|(index, _)| self.lower == index + 1 || self.upper == index + 1)
             .filter(|(_, c)| &self.ch == c)
-            .count() == 1
+            .count()
+            == 1
     }
 }
 
@@ -30,13 +31,14 @@ pub fn day2_generator(input: &str) -> Vec<Password> {
         .lines()
         .map(|l| {
             let captures = re.captures(l.trim()).expect("No match found");
-            Password{
+            Password {
                 lower: captures[1].parse().unwrap(),
                 upper: captures[2].parse().unwrap(),
                 ch: captures[3].parse().unwrap(),
-                password: captures[4].to_string()
-                }
-        }).collect()
+                password: captures[4].to_string(),
+            }
+        })
+        .collect()
 }
 
 #[aoc(day2, part1)]
@@ -49,15 +51,13 @@ pub fn day2_part2(input: &Vec<Password>) -> usize {
     input.iter().filter(|x| x.is_valid_part_2()).count()
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-
     #[test]
     pub fn test1() {
-            let sample = "1-3 a: abcde,
+        let sample = "1-3 a: abcde,
             1-3 b: cdefg
             2-9 c: cc
             2-9 c: cccccc

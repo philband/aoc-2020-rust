@@ -15,70 +15,37 @@ pub fn day15_part2(input: &[usize]) -> usize {
     get_nth_map(input, 30000000)
 }
 
-pub fn get_nth(input: &[u64], n: usize) -> u64 {
-    let mut map: HashMap<usize, u64> = HashMap::new();
-
-    input.iter().enumerate().for_each(|(k, &v)| { map.insert(k, v); });
-
-    for i in input.len()..n {
-        let &last = map.get(&(map.len()-1)).unwrap();
-        let mut spoken: Vec<u64> = map.iter().filter(|(&_k, &v)| v == last).map(|(&k, _)| k as u64).collect();
-        spoken.sort_unstable();
-        if spoken.len() < 2 {
-            map.insert(i, 0);
-        } else {
-            map.insert(i, spoken[spoken.len()-1] - spoken[spoken.len()-2]);
-        }
-    }
-    *map.get(&(n-1)).unwrap()
-}
-
 pub fn get_nth_map(input: &[usize], n: usize) -> usize {
     let mut map: HashMap<usize, Vec<usize>> = HashMap::new();
 
-    input
-        .iter()
-        .enumerate()
-        .for_each(|(k, &v)| {
-            if map.get(&v).is_some() {
-                map.get_mut(&v).unwrap().push(k);
-            } else {
-                let mut newv: Vec<usize> = Vec::new();
-                newv.push(k);
-                map.insert(v, newv);
-            }
-             });
+    input.iter().enumerate().for_each(|(k, &v)| {
+        if map.get(&v).is_some() {
+            map.get_mut(&v).unwrap().push(k);
+        } else {
+            let mut newv: Vec<usize> = Vec::new();
+            newv.push(k);
+            map.insert(v, newv);
+        }
+    });
 
-    let mut last = input[input.len()-1];
+    let mut last = input[input.len() - 1];
     let mut spoken: usize;
     for i in input.len()..n {
-        //println!("last: {}, spoken: {}", last, spoken);
-        //for (&k, v) in map.iter() {
-        //    print!("{}|{} => [ ", i, k);
-        //    for i in v.iter() {
-        //        print!("{} ", i)
-        //    }
-        //    println!("]")
-        //}
         if map.get(&last).is_some() {
             let prev = map.get(&last).unwrap();
             if prev.len() >= 2 {
-                spoken = prev[prev.len()-1] - prev[prev.len()-2];
+                spoken = prev[prev.len() - 1] - prev[prev.len() - 2];
             } else {
                 spoken = 0;
             }
-
         } else {
             spoken = 0
         }
-
         if map.get(&spoken).is_some() {
             map.get_mut(&spoken).unwrap().push(i);
         } else {
             map.insert(spoken, vec![i]);
         }
-        //println!("last: {}, spoken: {}", last, spoken);
-        //println!("==================================================");
         last = spoken;
     }
     last

@@ -1,5 +1,5 @@
-use std::{cmp::Ordering, collections::BTreeSet};
 use itertools::Itertools;
+use std::{cmp::Ordering, collections::BTreeSet};
 
 const TARGET: i32 = 2020;
 
@@ -77,7 +77,6 @@ pub fn part2_iter(inputs: &[i32]) -> i32 {
         .find(|x| x[0] + x[1] + x[2] == TARGET)
         .map(|x| x[0] * x[1] * x[2])
         .unwrap();
-
 }
 
 #[cfg(test)]

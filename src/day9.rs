@@ -1,25 +1,18 @@
-
 #[aoc_generator(day9)]
 pub fn day9_generator(input: &str) -> Vec<usize> {
-    input
-        .lines()
-        .map(|line| line.parse().unwrap())
-        .collect()
+    input.lines().map(|line| line.parse().unwrap()).collect()
 }
 
 #[aoc(day9, part1)]
 pub fn day9_part1(input: &Vec<usize>) -> usize {
     for i in 25..input.len() {
         let target = input[i];
-        let haystack = &input[i-25..i];
-        if ! haystack
+        let haystack = &input[i - 25..i];
+        if !haystack
             .iter()
-            .any(|x|
-                haystack
-                    .iter()
-                    .any(|y| x != y && x + y == target)
-            ) {
-            return input[i]
+            .any(|x| haystack.iter().any(|y| x != y && x + y == target))
+        {
+            return input[i];
         }
     }
     0
@@ -33,9 +26,10 @@ pub fn day9_part2(input: &Vec<usize>) -> usize {
         for i in start..input.len() {
             sum += input[i];
             if sum > magic_invalid_number {
-                break
+                break;
             } else if sum == magic_invalid_number {
-                return input[start..i].iter().min().unwrap() + input[start..i].iter().max().unwrap()
+                return input[start..i].iter().min().unwrap()
+                    + input[start..i].iter().max().unwrap();
             }
         }
     }
@@ -48,8 +42,7 @@ mod tests {
 
     #[test]
     pub fn test0() {
-
-    let sample = "1
+        let sample = "1
 2
 3
 4
@@ -78,9 +71,9 @@ mod tests {
 49
 100
 50";
-    let generated = day9_generator(&sample);
-    assert_eq!(day9_part1(&generated), 100)
-}
+        let generated = day9_generator(&sample);
+        assert_eq!(day9_part1(&generated), 100)
+    }
 
     #[test]
     pub fn test1() {
@@ -107,5 +100,4 @@ mod tests {
         let generated = day9_generator(&sample);
         assert_eq!(day9_part1(&generated), 127)
     }
-
 }

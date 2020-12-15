@@ -3,21 +3,25 @@ use std::mem::swap;
 
 pub struct MemModifier {
     m: String,
-    mem: Vec<(u64, u64)>
+    mem: Vec<(u64, u64)>,
 }
 
 #[aoc_generator(day14)]
 pub fn day14_generator(input: &str) -> Vec<MemModifier> {
-    let mut writes:Vec<(u64, u64)> = Vec::new();
+    let mut writes: Vec<(u64, u64)> = Vec::new();
     let mut mask = "".to_string();
     let mut target_vec: Vec<MemModifier> = Vec::new();
 
     input.lines().into_iter().for_each(|line| {
-        let parts: Vec<&str> = line.split('=').into_iter().map(|part| part.trim()).collect();
+        let parts: Vec<&str> = line
+            .split('=')
+            .into_iter()
+            .map(|part| part.trim())
+            .collect();
         if parts[0] == "mask" {
-            target_vec.push( MemModifier {
+            target_vec.push(MemModifier {
                 m: mask.clone(),
-                mem: writes.clone()
+                mem: writes.clone(),
             });
             mask = parts[1].to_string();
             writes = Vec::new();
@@ -26,41 +30,39 @@ pub fn day14_generator(input: &str) -> Vec<MemModifier> {
             writes.push((addr, val));
         }
     });
-    target_vec.push( MemModifier {
+    target_vec.push(MemModifier {
         m: mask.clone(),
-        mem: writes.clone()
+        mem: writes.clone(),
     });
     target_vec
 }
 
 pub fn decode_mem_instruction(inst: &str, val: &str) -> (u64, u64) {
-    (inst[4..inst.len()-1].parse().unwrap(), val.parse().unwrap())
+    (
+        inst[4..inst.len() - 1].parse().unwrap(),
+        val.parse().unwrap(),
+    )
 }
 
 pub fn decode_mask(val: String) -> (u64, u64) {
     let mut ones: u64 = 0;
     let mut zeroes: u64 = 0;
-    val.char_indices().for_each(|(idx, c)| {
-        match c {
-            '0' => zeroes |= 1 << (35-idx),
-            '1' => ones |= 1 << (35-idx),
-            _ => {}
-        }
+    val.char_indices().for_each(|(idx, c)| match c {
+        '0' => zeroes |= 1 << (35 - idx),
+        '1' => ones |= 1 << (35 - idx),
+        _ => {}
     });
     zeroes = !zeroes;
     (zeroes, ones)
 }
 
-
 pub fn decode_mask_part2(val: String) -> (u64, Vec<u64>) {
     let mut ones: u64 = 0;
     let mut floating: Vec<u64> = Vec::new();
-    val.char_indices().for_each(|(idx, c)| {
-        match c {
-            '1' => ones |= 1 << (35-idx),
-            'X' => floating.push(35-idx as u64),
-            _ => {}
-        }
+    val.char_indices().for_each(|(idx, c)| match c {
+        '1' => ones |= 1 << (35 - idx),
+        'X' => floating.push(35 - idx as u64),
+        _ => {}
     });
     (ones, floating)
 }
@@ -88,7 +90,10 @@ pub fn day14_part2(input: &[MemModifier]) -> u64 {
         mm.mem.iter().for_each(|(base, data)| {
             let (ones, floating) = decode_mask_part2(mm.m.clone());
             let addresses = generate_addresses_from_mask(*base, ones, &floating);
-            assert_eq!((2 as usize).pow(floating.len() as u32) as usize, addresses.len());
+            assert_eq!(
+                (2 as usize).pow(floating.len() as u32) as usize,
+                addresses.len()
+            );
             assert_eq!(floating.len(), mm.m.chars().filter(|&c| c == 'X').count());
             for a in addresses {
                 memory.insert(a, *data);
@@ -121,21 +126,37 @@ mod tests {
 
     #[test]
     pub fn test0() {
-        assert_eq!(apply_mask(0b00000000_00000000_00000000_00000000_00011000_00000000_00000000_00000000, 0xFFFF_FFFF_FFFF_FFFF, 0), 0b00000000_00000000_00000000_00000000_00011000_00000000_00000000_00000000);
+        assert_eq!(
+            apply_mask(
+                0b00000000_00000000_00000000_00000000_00011000_00000000_00000000_00000000,
+                0xFFFF_FFFF_FFFF_FFFF,
+                0
+            ),
+            0b00000000_00000000_00000000_00000000_00011000_00000000_00000000_00000000
+        );
 
         let (z, o) = decode_mask("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X".to_string());
-        assert_eq!(apply_mask(z, o, 0b000000000000000000000000000000001011), 0b000000000000000000000000000001001001);
+        assert_eq!(
+            apply_mask(z, o, 0b000000000000000000000000000000001011),
+            0b000000000000000000000000000001001001
+        );
 
         let (z, o) = decode_mask("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X".to_string());
-        assert_eq!(apply_mask(z, o, 0b000000000000000000000000000001100101), 0b000000000000000000000000000001100101);
+        assert_eq!(
+            apply_mask(z, o, 0b000000000000000000000000000001100101),
+            0b000000000000000000000000000001100101
+        );
 
         let (z, o) = decode_mask("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X".to_string());
-        assert_eq!(apply_mask(z, o, 0b000000000000000000000000000000000000), 0b000000000000000000000000000001000000);
+        assert_eq!(
+            apply_mask(z, o, 0b000000000000000000000000000000000000),
+            0b000000000000000000000000000001000000
+        );
     }
 
     #[test]
     pub fn test1() {
-let sample = "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
+        let sample = "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
 mem[8] = 11
 mem[7] = 101
 mem[8] = 0";

@@ -1,11 +1,13 @@
-
 #[aoc_generator(day3)]
 pub fn day3_generator(input: &str) -> Vec<Vec<bool>> {
     input
         .lines()
         .map(|l| {
-            l.char_indices().map(|(_, x)| if x == '#' {true} else {false}).collect()
-        }).collect()
+            l.char_indices()
+                .map(|(_, x)| if x == '#' { true } else { false })
+                .collect()
+        })
+        .collect()
 }
 
 #[aoc(day3, part1)]
@@ -16,10 +18,10 @@ pub fn day3_part1(input: &Vec<Vec<bool>>) -> usize {
 #[aoc(day3, part2)]
 pub fn day3_part2(input: &Vec<Vec<bool>>) -> usize {
     find_trees(input, 1, 1)
-    * find_trees(input, 3, 1)
-    * find_trees(input, 5, 1)
-    * find_trees(input, 7, 1)
-    * find_trees(input, 1, 2)
+        * find_trees(input, 3, 1)
+        * find_trees(input, 5, 1)
+        * find_trees(input, 7, 1)
+        * find_trees(input, 1, 2)
 }
 
 pub fn find_trees(input: &Vec<Vec<bool>>, right: usize, down: usize) -> usize {
@@ -29,7 +31,7 @@ pub fn find_trees(input: &Vec<Vec<bool>>, right: usize, down: usize) -> usize {
         .skip(1)
         .enumerate()
         .filter_map(|(i, l)| {
-            if (i+1) % down == 0 {
+            if (i + 1) % down == 0 {
                 index += right;
                 //println!("target {} converted {} data {}", index, index % l.len(), l[index % l.len()]);
                 Some(l[index % l.len()])
@@ -37,7 +39,7 @@ pub fn find_trees(input: &Vec<Vec<bool>>, right: usize, down: usize) -> usize {
                 None
             }
         })
-        .map(|b| if b {1} else {0})
+        .map(|b| if b { 1 } else { 0 })
         .sum()
 }
 
@@ -45,11 +47,9 @@ pub fn find_trees(input: &Vec<Vec<bool>>, right: usize, down: usize) -> usize {
 mod tests {
     use super::*;
 
-
     #[test]
     pub fn test1() {
-        let sample =
-"..##.......
+        let sample = "..##.......
 #...#...#..
 .#....#..#.
 ..#.#...#.#
@@ -70,8 +70,7 @@ mod tests {
 
     #[test]
     pub fn test2() {
-        let sample =
-            "..##.......
+        let sample = "..##.......
 #...#...#..
 .#....#..#.
 ..#.#...#.#
@@ -93,6 +92,5 @@ mod tests {
         assert_eq!(find_trees(&generated, 7, 1), 4);
         assert_eq!(find_trees(&generated, 1, 2), 2);
         assert_eq!(day3_part2(&generated), 336)
-
     }
 }

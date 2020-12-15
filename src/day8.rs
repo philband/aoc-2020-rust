@@ -1,5 +1,5 @@
-use std::fmt;
 use std::collections::HashSet;
+use std::fmt;
 
 #[derive(Debug, Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
 enum OperationCode {
@@ -15,7 +15,7 @@ impl fmt::Display for OperationCode {
             OperationCode::Nop => write!(f, "nop"),
             OperationCode::Acc => write!(f, "acc"),
             OperationCode::Jmp => write!(f, "jmp"),
-            _ => write!(f, "INVALID")
+            _ => write!(f, "INVALID"),
         }
     }
 }
@@ -37,7 +37,7 @@ pub fn day8_generator(input: &str) -> Vec<Operation> {
                     "nop" => OperationCode::Nop,
                     "acc" => OperationCode::Acc,
                     "jmp" => OperationCode::Jmp,
-                    _  => OperationCode::Invalid,
+                    _ => OperationCode::Invalid,
                 },
                 val: parts[1].parse::<i32>().unwrap(),
             }
@@ -50,7 +50,12 @@ pub fn day8_part1(input: &Vec<Operation>) -> i32 {
     part1_recurse(input, 0, 0, HashSet::new())
 }
 
-pub fn part1_recurse(input: &Vec<Operation>, index: i32, accumulator: i32, visited: HashSet<i32>) -> i32 {
+pub fn part1_recurse(
+    input: &Vec<Operation>,
+    index: i32,
+    accumulator: i32,
+    visited: HashSet<i32>,
+) -> i32 {
     if visited.contains(&index) || index as usize >= input.len() {
         accumulator
     } else {
@@ -58,16 +63,18 @@ pub fn part1_recurse(input: &Vec<Operation>, index: i32, accumulator: i32, visit
         let mut next_visited = visited.clone();
         next_visited.insert(index);
 
-        part1_recurse(input,
-        match current.opcode {
-            OperationCode::Jmp => index + current.val,
-            _ => index + 1,
-        },
-        match current.opcode {
-            OperationCode::Acc => accumulator + current.val,
-            _ => accumulator
-        },
-        next_visited)
+        part1_recurse(
+            input,
+            match current.opcode {
+                OperationCode::Jmp => index + current.val,
+                _ => index + 1,
+            },
+            match current.opcode {
+                OperationCode::Acc => accumulator + current.val,
+                _ => accumulator,
+            },
+            next_visited,
+        )
     }
 }
 
@@ -82,19 +89,24 @@ pub fn day8_part2(input: &Vec<Operation>) -> i32 {
             opcode: match v.opcode {
                 OperationCode::Jmp => OperationCode::Nop,
                 OperationCode::Nop => OperationCode::Jmp,
-                _ => v.opcode
+                _ => v.opcode,
             },
-            val: v.val
+            val: v.val,
         };
         let ret_val = part2_recurse(&test_vec, 0, 0, HashSet::new());
         if ret_val > 0 {
-            return ret_val
+            return ret_val;
         }
     }
     0
 }
 
-pub fn part2_recurse(input: &Vec<Operation>, index: i32, accumulator: i32, visited: HashSet<i32>) -> i32 {
+pub fn part2_recurse(
+    input: &Vec<Operation>,
+    index: i32,
+    accumulator: i32,
+    visited: HashSet<i32>,
+) -> i32 {
     if index as usize >= input.len() {
         accumulator
     } else if visited.contains(&index) {
@@ -104,16 +116,18 @@ pub fn part2_recurse(input: &Vec<Operation>, index: i32, accumulator: i32, visit
         let mut next_visited = visited.clone();
         next_visited.insert(index);
 
-        part2_recurse(input,
-                      match current.opcode {
-                          OperationCode::Jmp => index + current.val,
-                          _ => index + 1,
-                      },
-                      match current.opcode {
-                          OperationCode::Acc => accumulator + current.val,
-                          _ => accumulator
-                      },
-                      next_visited)
+        part2_recurse(
+            input,
+            match current.opcode {
+                OperationCode::Jmp => index + current.val,
+                _ => index + 1,
+            },
+            match current.opcode {
+                OperationCode::Acc => accumulator + current.val,
+                _ => accumulator,
+            },
+            next_visited,
+        )
     }
 }
 

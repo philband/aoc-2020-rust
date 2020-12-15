@@ -6,7 +6,7 @@ pub enum SeatStatus {
     Floor = 0,
     Occupied = 1,
     Empty = 2,
-    DontCare = 255
+    DontCare = 255,
 }
 impl fmt::Display for SeatStatus {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -14,7 +14,7 @@ impl fmt::Display for SeatStatus {
             SeatStatus::Floor => write!(f, "."),
             SeatStatus::Occupied => write!(f, "#"),
             SeatStatus::Empty => write!(f, "L"),
-            _ => write!(f, "INVALID")
+            _ => write!(f, "INVALID"),
         }
     }
 }
@@ -24,14 +24,14 @@ pub fn day11_generator(input: &str) -> Vec<Vec<SeatStatus>> {
     input
         .lines()
         .map(|line| {
-            line
-                .chars()
+            line.chars()
                 .map(|c| match c {
-                '.' => SeatStatus::Floor,
-                'L' => SeatStatus::Empty,
-                '#' => SeatStatus::Occupied,
-                _ => SeatStatus::DontCare
-                 }).collect()
+                    '.' => SeatStatus::Floor,
+                    'L' => SeatStatus::Empty,
+                    '#' => SeatStatus::Occupied,
+                    _ => SeatStatus::DontCare,
+                })
+                .collect()
         })
         .collect()
 }
@@ -48,21 +48,31 @@ pub fn iterate_placement(input: &Vec<Vec<SeatStatus>>, iter_count: usize) -> usi
     for (x_coord, x) in input.iter().enumerate() {
         for (y_coord, y) in x.iter().enumerate() {
             //let it = (-1..=1).cartesian_product(-1..=1).into_iter().for_each(|x| println!("x: {}, y: {}", x.0, x.1));
-            let adjacent: Vec<SeatStatus> = (-1..=1).cartesian_product(-1..=1).into_iter().map(|mv| {
-                let i = mv.0;
-                let j = mv.1;
-                if i == 0 && j == 0 {
-                    SeatStatus::DontCare
-                } else if (x_coord as i32 + i < 0) || (x_coord as i32 + i >= input.len() as i32) || (y_coord as i32 + j  < 0) ||(y_coord as i32 + j >= x.len() as i32) {
-                    SeatStatus::Empty
-                } else {
-                    let xn: usize = ((x_coord as i32) + i) as usize;
-                    let yn: usize = ((y_coord as i32) + j) as usize;
-                    //println!("x: {} y:{} xn: {} yn:{}", x_coord, y_coord, xn, yn);
-                    input[xn][yn].clone()
-                }
-            }).collect();
-            let near_occupied = adjacent.iter().fold(0, |acc, x| acc + if x == &SeatStatus::Occupied { 1 } else { 0 });
+            let adjacent: Vec<SeatStatus> = (-1..=1)
+                .cartesian_product(-1..=1)
+                .into_iter()
+                .map(|mv| {
+                    let i = mv.0;
+                    let j = mv.1;
+                    if i == 0 && j == 0 {
+                        SeatStatus::DontCare
+                    } else if (x_coord as i32 + i < 0)
+                        || (x_coord as i32 + i >= input.len() as i32)
+                        || (y_coord as i32 + j < 0)
+                        || (y_coord as i32 + j >= x.len() as i32)
+                    {
+                        SeatStatus::Empty
+                    } else {
+                        let xn: usize = ((x_coord as i32) + i) as usize;
+                        let yn: usize = ((y_coord as i32) + j) as usize;
+                        //println!("x: {} y:{} xn: {} yn:{}", x_coord, y_coord, xn, yn);
+                        input[xn][yn].clone()
+                    }
+                })
+                .collect();
+            let near_occupied = adjacent.iter().fold(0, |acc, x| {
+                acc + if x == &SeatStatus::Occupied { 1 } else { 0 }
+            });
             if y == &SeatStatus::Empty && near_occupied == 0 {
                 new_seat_status[x_coord][y_coord] = SeatStatus::Occupied;
             }
@@ -76,14 +86,14 @@ pub fn iterate_placement(input: &Vec<Vec<SeatStatus>>, iter_count: usize) -> usi
     if input
         .iter()
         .flatten()
-        .zip(
-            new_seat_status
-                .iter()
-                .flatten())
+        .zip(new_seat_status.iter().flatten())
         .filter(|&(a, b)| a != b)
-        .count() == 0
+        .count()
+        == 0
     {
-        input.iter().flatten().fold(0, |acc, x| acc + if x == &SeatStatus::Occupied { 1 } else { 0 })
+        input.iter().flatten().fold(0, |acc, x| {
+            acc + if x == &SeatStatus::Occupied { 1 } else { 0 }
+        })
     } else {
         iterate_placement(&new_seat_status, iter_count + 1)
     }
@@ -111,18 +121,28 @@ pub fn iterate_placement_part2(input: &Vec<Vec<SeatStatus>>, iter_count: usize) 
     for (x_coord, x) in input.iter().enumerate() {
         for (y_coord, y) in x.iter().enumerate() {
             //let it = (-1..=1).cartesian_product(-1..=1).into_iter().for_each(|x| println!("x: {}, y: {}", x.0, x.1));
-            let adjacent: Vec<SeatStatus> = (-1..=1).cartesian_product(-1..=1).into_iter().map(|mv| {
-                let i = mv.0;
-                let j = mv.1;
-                if i == 0 && j == 0 {
-                    SeatStatus::DontCare
-                } else if (x_coord as i32 + i < 0) || (x_coord as i32 + i >= input.len() as i32) || (y_coord as i32 + j  < 0) ||(y_coord as i32 + j >= x.len() as i32) {
-                    SeatStatus::Empty
-                } else {
-                    get_seat_in_direction(input, x_coord, y_coord, i, j)
-                }
-            }).collect();
-            let near_occupied = adjacent.iter().fold(0, |acc, x| acc + if x == &SeatStatus::Occupied { 1 } else { 0 });
+            let adjacent: Vec<SeatStatus> = (-1..=1)
+                .cartesian_product(-1..=1)
+                .into_iter()
+                .map(|mv| {
+                    let i = mv.0;
+                    let j = mv.1;
+                    if i == 0 && j == 0 {
+                        SeatStatus::DontCare
+                    } else if (x_coord as i32 + i < 0)
+                        || (x_coord as i32 + i >= input.len() as i32)
+                        || (y_coord as i32 + j < 0)
+                        || (y_coord as i32 + j >= x.len() as i32)
+                    {
+                        SeatStatus::Empty
+                    } else {
+                        get_seat_in_direction(input, x_coord, y_coord, i, j)
+                    }
+                })
+                .collect();
+            let near_occupied = adjacent.iter().fold(0, |acc, x| {
+                acc + if x == &SeatStatus::Occupied { 1 } else { 0 }
+            });
             if y == &SeatStatus::Empty && near_occupied == 0 {
                 new_seat_status[x_coord][y_coord] = SeatStatus::Occupied;
             }
@@ -136,32 +156,38 @@ pub fn iterate_placement_part2(input: &Vec<Vec<SeatStatus>>, iter_count: usize) 
     if input
         .iter()
         .flatten()
-        .zip(
-            new_seat_status
-                .iter()
-                .flatten())
+        .zip(new_seat_status.iter().flatten())
         .filter(|&(a, b)| a != b)
-        .count() == 0
+        .count()
+        == 0
     {
-        input.iter().flatten().fold(0, |acc, x| acc + if x == &SeatStatus::Occupied { 1 } else { 0 })
+        input.iter().flatten().fold(0, |acc, x| {
+            acc + if x == &SeatStatus::Occupied { 1 } else { 0 }
+        })
     } else {
         iterate_placement_part2(&new_seat_status, iter_count + 1)
     }
 }
 
-pub fn get_seat_in_direction(seats: &Vec<Vec<SeatStatus>>, x: usize, y: usize, dx: i32, dy: i32) -> SeatStatus {
+pub fn get_seat_in_direction(
+    seats: &Vec<Vec<SeatStatus>>,
+    x: usize,
+    y: usize,
+    dx: i32,
+    dy: i32,
+) -> SeatStatus {
     let mut px = x as i32;
     let mut py = y as i32;
     loop {
         px += dx;
         py += dy;
         if px < 0 || py < 0 || px as usize >= seats.len() || py as usize >= seats[0].len() {
-            return SeatStatus::Empty
+            return SeatStatus::Empty;
         } else {
             if seats[px as usize][py as usize] == SeatStatus::Floor {
-                return get_seat_in_direction(seats, px as usize, py as usize, dx, dy)
+                return get_seat_in_direction(seats, px as usize, py as usize, dx, dy);
             } else {
-                return seats[px as usize][py as usize]
+                return seats[px as usize][py as usize];
             }
         }
     }
@@ -173,7 +199,7 @@ mod tests {
 
     #[test]
     pub fn test1() {
-let sample = "L.LL.LL.LL
+        let sample = "L.LL.LL.LL
 LLLLLLL.LL
 L.L.L..L..
 LLLL.LL.LL
