@@ -34,9 +34,11 @@ pub fn day17_part1(input: &HashSet<(i32, i32, i32, i32)>) -> usize {
                 .filter(|(i, j, k)| input2.contains(&(*i, *j, *k, 0)))
                 .count();
             match (input2.contains(&(x, y, z, 0)), adjacent) {
-                (true, 3..=4) => input1.insert((x, y, z, 0)),
+                (true, 3..=4) => true,
+                (true, _) => input1.remove(&(x, y, z, 0)),
                 (false, 3) => input1.insert((x, y, z, 0)),
-                _ => input1.remove(&(x, y, z, 0))
+                _ => true
+
             };
         }
         swap(&mut input1, &mut input2);
@@ -65,9 +67,10 @@ pub fn day17_part2(input: &HashSet<(i32, i32, i32, i32)>) -> usize {
                 .filter(|(i, j, k, l)| input2.contains(&(*i, *j, *k, *l)))
                 .count();
             match (input2.contains(&(x, y, z, w)), adjacent) {
-                (true, 3..=4) => input1.insert((x, y, z, w)),
-                (false, 3) => input1.insert((x, y, z, w)),
-                _ => input1.remove(&(x, y, z, w))
+                (true, 3..=4) => true,
+                (true, _) => input1.remove(&(x, y, z, 0)),
+                (false, 3) => input1.insert((x, y, z, 0)),
+                _ => true
             };
         }
         swap(&mut input1, &mut input2);
