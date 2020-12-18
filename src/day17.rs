@@ -30,16 +30,8 @@ pub fn day17_part1(input: &HashSet<(i32, i32, i32, i32)>) -> usize {
 
     for i in 1..=CYCLES {
         std::mem::swap(&mut pre, &mut cur);
-        for (x, y, z) in iproduct!(-(i + 3)..=(i + 3), -(i + 3)..=(i + 3), -i..=i) {
-            let adjacent = iproduct!(x - 1..=x + 1, y - 1..=y + 1, z - 1..=z + 1)
-                .into_iter()
-                .filter(|(i, j, k)| pre.contains(&(*i, *j, *k, 0)))
-                .count();
-            match (pre.contains(&(x, y, z, 0)), adjacent) {
-                (true, 3..=4) => cur.insert((x, y, z, 0)),
-                (false, 3) => cur.insert((x, y, z, 0)),
-                _ => cur.remove(&(x, y, z, 0))
-            };
+        for loc in iproduct!(-(i + 3)..=(i + 3), -(i + 3)..=(i + 3), -i..=i, 0..=0) {
+            change(&pre, &mut cur, loc, neighbors3(loc, &pre));
         }
     }
     cur.len()
@@ -52,19 +44,34 @@ pub fn day17_part2(input: &HashSet<(i32, i32, i32, i32)>) -> usize {
 
     for i in 1..=CYCLES {
         std::mem::swap(&mut pre, &mut cur);
-        for (x, y, z, w) in iproduct!(-(i + 3)..=(i + 3), -(i + 3)..=(i + 3), -i..=i, -i..=i) {
-            let adjacent = iproduct!(x - 1..=x + 1, y - 1..=y + 1, z - 1..=z + 1, w - 1..=w + 1)
-                .into_iter()
-                .filter(|(i, j, k, l)| pre.contains(&(*i, *j, *k, *l)))
-                .count();
-            match (pre.contains(&(x, y, z, w)), adjacent) {
-                (true, 3..=4) => cur.insert((x, y, z, w)),
-                (false, 3) => cur.insert((x, y, z, w)),
-                _ => cur.remove(&(x, y, z, w)),
-            };
+        for loc in iproduct!(-(i + 3)..=(i + 3), -(i + 3)..=(i + 3), -i..=i, -i..=i) {
+            change(&pre, &mut cur, loc, neighbors4(loc, &pre));
         }
     }
     cur.len()
+}
+fn neighbors3(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) -> usize {
+    let (x, y, z, w) = loc;
+    iproduct!(x - 1..=x + 1, y - 1..=y + 1, z - 1..=z + 1)
+        .into_iter()
+        .filter(|(i, j, k)| *&pre.contains(&(*i, *j, *k, w)))
+        .count()
+}
+
+fn neighbors4(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) -> usize {
+    let (x, y, z, w) = loc;
+    iproduct!(x - 1..=x + 1, y - 1..=y + 1, z - 1..=z + 1, w - 1..=w + 1)
+        .into_iter()
+        .filter(|(i, j, k, l)| *&pre.contains(&(*i, *j, *k, *l)))
+        .count()
+}
+
+fn change(pre: &HashSet<(i32, i32, i32, i32)>, set: &mut HashSet<(i32, i32, i32, i32)>, loc: (i32, i32, i32, i32), cnt: usize) {
+    match (pre.contains(&loc), cnt) {
+        (true, 3..=4) => set.insert(loc),
+        (false, 3) => set.insert(loc),
+        _ => set.remove(&loc),
+    };
 }
 
 #[cfg(test)]
