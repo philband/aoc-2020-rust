@@ -66,7 +66,12 @@ fn count_neighbors4(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32
         .count()
 }
 
-fn apply_rules(pre: &HashSet<(i32, i32, i32, i32)>, set: &mut HashSet<(i32, i32, i32, i32)>, loc: (i32, i32, i32, i32), cnt: usize) {
+fn apply_rules(
+    pre: &HashSet<(i32, i32, i32, i32)>,
+    set: &mut HashSet<(i32, i32, i32, i32)>,
+    loc: (i32, i32, i32, i32),
+    cnt: usize,
+) {
     match (pre.contains(&loc), cnt) {
         (true, 3..=4) => set.insert(loc),
         (false, 3) => set.insert(loc),
