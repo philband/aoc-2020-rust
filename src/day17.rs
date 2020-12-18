@@ -46,9 +46,9 @@ pub fn day17_part1(input: &HashMap<(i32, i32, i32, i32), bool>) -> i32 {
                 .sum();
             input1.insert(
                 (x, y, z, 0),
-                match (input2.get(&(x, y, z, 0)).unwrap(), adjacent) {
-                    (true, 3..=4) => true,
-                    (false, 3) => true,
+                match (input2.get(&(x, y, z, 0)), adjacent) {
+                    (Some(true), 3..=4) => true,
+                    (Some(false), 3) => true,
                     _ => false,
                 },
             );
@@ -88,9 +88,9 @@ pub fn day17_part2(input: &HashMap<(i32, i32, i32, i32), bool>) -> i32 {
                 .sum();
             input1.insert(
                 (x, y, z, w),
-                match (input2.get(&(x, y, z, w)).unwrap(), adjacent) {
-                    (true, 3..=4) => true,
-                    (false, 3) => true,
+                match (input2.get(&(x, y, z, w)), adjacent) {
+                    (Some(true), 3..=4) => true,
+                    (Some(false), 3) => true,
                     _ => false,
                 },
             );
