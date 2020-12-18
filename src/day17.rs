@@ -31,7 +31,7 @@ pub fn day17_part1(input: &HashSet<(i32, i32, i32, i32)>) -> usize {
     for i in 1..=CYCLES {
         std::mem::swap(&mut pre, &mut cur);
         for loc in iproduct!(-(i + 3)..=(i + 3), -(i + 3)..=(i + 3), -i..=i, 0..=0) {
-            change(&pre, &mut cur, loc, neighbors3(loc, &pre));
+            apply_rules(&pre, &mut cur, loc, count_neighbors3(loc, &pre));
         }
     }
     cur.len()
@@ -45,12 +45,12 @@ pub fn day17_part2(input: &HashSet<(i32, i32, i32, i32)>) -> usize {
     for i in 1..=CYCLES {
         std::mem::swap(&mut pre, &mut cur);
         for loc in iproduct!(-(i + 3)..=(i + 3), -(i + 3)..=(i + 3), -i..=i, -i..=i) {
-            change(&pre, &mut cur, loc, neighbors4(loc, &pre));
+            apply_rules(&pre, &mut cur, loc, count_neighbors4(loc, &pre));
         }
     }
     cur.len()
 }
-fn neighbors3(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) -> usize {
+fn count_neighbors3(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) -> usize {
     let (x, y, z, w) = loc;
     iproduct!(x - 1..=x + 1, y - 1..=y + 1, z - 1..=z + 1)
         .into_iter()
@@ -58,7 +58,7 @@ fn neighbors3(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) ->
         .count()
 }
 
-fn neighbors4(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) -> usize {
+fn count_neighbors4(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) -> usize {
     let (x, y, z, w) = loc;
     iproduct!(x - 1..=x + 1, y - 1..=y + 1, z - 1..=z + 1, w - 1..=w + 1)
         .into_iter()
@@ -66,7 +66,7 @@ fn neighbors4(loc: (i32, i32, i32, i32), pre: &HashSet<(i32, i32, i32, i32)>) ->
         .count()
 }
 
-fn change(pre: &HashSet<(i32, i32, i32, i32)>, set: &mut HashSet<(i32, i32, i32, i32)>, loc: (i32, i32, i32, i32), cnt: usize) {
+fn apply_rules(pre: &HashSet<(i32, i32, i32, i32)>, set: &mut HashSet<(i32, i32, i32, i32)>, loc: (i32, i32, i32, i32), cnt: usize) {
     match (pre.contains(&loc), cnt) {
         (true, 3..=4) => set.insert(loc),
         (false, 3) => set.insert(loc),
